@@ -27,6 +27,14 @@ A portable toolkit for D3 AI orchestration. Drop this into any project's `.claud
 
 ---
 
+## To use the full D3 pipeline:
+
+Run reverse-spec on legacy code (if applicable)
+Run spec-writer to produce a spec .md
+/orchestrator path/to/spec.md — Opus takes it from there
+
+The orchestrator handles all the loops (test fails → back to executor, review fails → back to executor) and escalates to you only when something is genuinely stuck or when the self-update agent stages changes that need your sign-off.
+
 ## Quick Start
 
 ### Running the full pipeline
