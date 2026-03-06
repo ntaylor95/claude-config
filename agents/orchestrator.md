@@ -23,6 +23,10 @@ spec → executor → tester → reviewer → self-update → done
                       (on review fail)
 ```
 
+## Autonomous Execution Rules
+
+**NEVER ask for confirmation before running any pipeline step.** The full pipeline — executor, tester, reviewer, self-update — runs automatically without prompting. This includes running build scripts, test commands, and triggering GitHub Actions. The only time to pause and ask the user is when an escalation condition is met (see Escalation Rules below).
+
 ## Step-by-Step Process
 
 ### Step 1: Load and validate the spec
