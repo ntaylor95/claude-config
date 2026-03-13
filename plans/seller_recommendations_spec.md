@@ -60,7 +60,7 @@ Opus self-evaluates against all of the following before handing off to reviewer:
 | DynamoDB record not found on dismiss/action | Silently succeed — return `204` (idempotent) |
 | `recommendationType` route param does not parse to a valid `RecommendationType` enum value | Return `400` |
 | Metadata JSON in DynamoDB record is null or empty | Set `Metadata = null` on response object, log warning — do not fail the recommendation |
-| `RecommendationMetadataResolver` has no mapping for a parsed type | Fall back to `Dictionary<string, object>` deserialization, log warning |
+| `RecommendationMetadataResolver` has no mapping for a parsed type | Log warning with `recommendationType` + `sellerId`, set `Metadata = null` on the recommendation — do not fail the recommendation |
 
 ---
 
@@ -78,7 +78,7 @@ Execute steps in order. Each step produces files on disk. Next step reads those 
 | 6 | Domain model | Create `SellerRecommendation` with `RecommendationType`, `string RawMetadata`, and resolved `RecommendationMetadata Metadata` | code | executor | Steps 2–4 output | `V3Core/Recommendations/Models/SellerRecommendation.cs` |
 | 7 | Repository interface + impl | Create `ISellerRecommendationsRepository` and `SellerRecommendationsRepository` using `IDynamoDbClient`; GET uses `QueryTable<SellerRecommendationRecord>` by `sellerId`; dismiss/action uses `GetRecordAsync` (hashKey=sellerId, rangeKey=recommendationType, `saveHashKeyAsNumeric: false`) then `PutItemAsync` | code | executor | Steps 1–2 output, `IDynamoDbClient` | `V3Core/Recommendations/DataAccess/ISellerRecommendationsRepository.cs`, `SellerRecommendationsRepository.cs` |
 | 8 | Service interface + impl | Create `ISellerRecommendationsService` and `SellerRecommendationsService`; maps records to domain models using `RecommendationMetadataResolver`; handles all failure modes from Section 4 | code | executor | Steps 5–7 output | `V3Core/Recommendations/Services/ISellerRecommendationsService.cs`, `SellerRecommendationsService.cs` |
-| 9 | Public contracts | Create `GetRecommendationsResponse` (wraps list) and `RecommendationResponse` (with `RecommendationMetadata Metadata`) in `WebV3Api/PublicContracts/Recommendations/` | code | executor | Step 6 output | `GetRecommendationsResponse.cs`, `RecommendationResponse.cs` |
+| 9 | Public contracts | Create `GetRecommendationsResponse` (wraps list) and `RecommendationResponse` in `WebV3Api/PublicContracts/Recommendations/`; `RecommendationResponse` exposes all record state: `string RecommendationType`, `object Metadata`, `bool IsDismissed`, `bool IsActioned`, `int DismissedCount`, `DateTime? DismissedAt`, `DateTime? ActionedAt` — no V3Core type references | code | executor | Step 6 output | `GetRecommendationsResponse.cs`, `RecommendationResponse.cs` |
 | 10 | Controller | Create `SellerRecommendationsController` in `WebV3Api/Seller/`; route `api/seller/recommendations`; GET returns `200`/empty list; POST dismiss + POST actioned return `204`; `sellerId` from `identity.SellerId` only | code | executor | Steps 8–9 output | `WebV3Api/Seller/SellerRecommendationsController.cs` |
 | 11 | DI registration | Add `RegisterRecommendationsServices(services)` call in `DIConfig.cs` main method; implement private method registering repo and service as `AddSingleton` | code | executor | Steps 7–8 output | updated `WebV3Api/DependencyInjection/DIConfig.cs` |
 | 12 | Unit tests | Write `SellerRecommendationsServiceTests` covering: happy path GET, empty result, DynamoDB exception on GET returns empty list, record-not-found on dismiss returns without error, metadata deserialization to `EnableSmartFillWeightMetadata`, unknown type falls back to dictionary | code | tester | Steps 6–8 output | `V3Core/Recommendations/Tests/SellerRecommendationsServiceTests.cs` |
@@ -95,7 +95,7 @@ IF recommendationType string from route does not parse to a valid Recommendation
   ELSE proceed
 
 IF RecommendationMetadataResolver has no mapping for the parsed type
-  THEN deserialize metadata as Dictionary<string, object> and log warning
+  THEN log warning with recommendationType + sellerId, set Metadata = null
   ELSE deserialize to registered concrete type
 
 IF metadata JSON in DynamoDB record is null or empty

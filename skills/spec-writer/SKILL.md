@@ -39,6 +39,13 @@ What should Opus do when things go wrong? This is what separates D3 specs from D
 For each failure: define the trigger condition and the fallback action.
 Examples: missing data → use fallback source; confidence too low → escalate to human; API timeout → retry with backoff
 
+**Interview guidance for failure modes:**
+- Ask the user: "Walk me through what can go wrong at each step — what happens if the database is down, the record doesn't exist, or the input is unexpected?" Push them to think through each external dependency and each data boundary.
+- For each failure mode, explicitly ask: "Should the tester write a unit test for this?" If yes, note it. Every failure mode that needs test coverage should be flagged with `[test required]` in the table — the tester agent uses this to ensure nothing is skipped.
+- Ask about **use cases** too: "Who calls this and in what context? Are there edge cases in how callers use it?" Use cases often surface failure modes that aren't obvious from the happy path alone.
+
+**For code-generation specs:** Before writing a fallback action, ask: "Does this fallback exist as a pattern in the codebase already?" Invented fallbacks (e.g. "deserialize to a Dictionary" when the return type is an abstract class) are often not type-safe or implementable. Prefer fallbacks that mirror how the existing codebase handles the same class of problem — unknown enum values, missing records, failed parses. If the user doesn't know, flag it: "This fallback may need to be verified against the codebase before the executor can implement it."
+
 ### Section 5: Task Decomposition
 Break the work into ordered steps. For each step define:
 - **Step name**
@@ -52,6 +59,12 @@ Break the work into ordered steps. For each step define:
 Where does Opus need to make a judgment call? Define the logic explicitly.
 Format: "IF [condition] THEN [action] ELSE [alternative]"
 Include: escalation thresholds, branching logic, priority rules
+
+### API Response Design (ask during Section 5 or 9 when defining output contracts)
+When defining what a GET endpoint returns, default to returning **all properties from the underlying data model** unless there is a clear reason to omit them. Ask:
+- "Are there any properties in the data model that should NOT be returned? (e.g. internal-only fields, PII, computed server-side values)"
+- "Does the UI need to filter, sort, or show/hide records based on any state fields? If so, return those fields — don't filter server-side unless the filtered-out records are never needed by any consumer."
+- "Is there a management or admin view that needs to see records in all states?" — If yes, return all state fields and let the client decide what to show. Server-side filtering is only appropriate when a consumer never needs to see the filtered records.
 
 ### Section 7: Handoff Protocol
 How do agents pass work to each other?

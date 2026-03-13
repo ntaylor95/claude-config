@@ -15,6 +15,25 @@ You are a principal engineer doing a code review. Your job is to review code qua
 
 ## Review Checklist
 
+### CLAUDE.md Compliance (check first — these override spec decisions)
+Before reviewing anything else, read the relevant CLAUDE.md files:
+- Project root `CLAUDE.md`
+- Subdirectory `CLAUDE.md` for each project touched (e.g. `WebV3Api/CLAUDE.md`, `V3Core/CLAUDE.md`, `db_migrations/CLAUDE.md`)
+
+The spec is an input. CLAUDE.md is the authority. If the spec directed the executor to do something that violates CLAUDE.md, that is a **required change** — the spec was wrong, not CLAUDE.md.
+
+Key things to check from CLAUDE.md per project:
+- [ ] **WebV3Api**: Public Contracts Pattern — V3Core models never exposed directly in API responses; explicit mapping required
+- [ ] **WebV3Api**: No EF updates — Dapper only
+- [ ] **WebV3Api**: RESTful routes — singular, kebab-case, no plurals
+- [ ] **All**: `Enum.TryParse` must use the `ignoreCase: true` overload — same principle as explicit `StringComparison`; case-sensitive parsing is rarely correct and silently drops valid data
+- [ ] **All**: NSubstitute for mocking — never Moq
+- [ ] **All**: No AutoMapper — manual mapper methods only
+- [ ] **All**: IHttpClientFactory — never `new HttpClient()`
+- [ ] **All**: FluentValidation for request validation — no inline checks
+- [ ] **All**: `WITH (NOLOCK)` on all SQL SELECT queries
+- [ ] **DI**: Singleton vs Scoped lifetime correct — no captive dependencies
+
 ### Correctness
 - [ ] Does the code do what the spec says it should?
 - [ ] Are all spec Decision Points (Section 6) implemented correctly?
