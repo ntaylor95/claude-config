@@ -51,6 +51,7 @@ Key things to check from CLAUDE.md per project:
 - [ ] Input validation present where needed
 - [ ] External inputs are sanitized before use
 - [ ] No SQL injection, XSS, or similar vectors (where relevant)
+- [ ] **Log injection — explicitly check every `Log.*` call in controllers and services:** For each one, trace every argument back to its source. If any argument originates from a route parameter, query string, request body, or any other external input, it must be sanitized before logging. The minimum fix is `.Replace("\r", "").Replace("\n", "")` on the value before passing it to the logger. Using `parsedType.ToString()` (the result of a successful enum parse) is safe — the raw string input is not. This is a **required change**, not a suggestion.
 
 ### Maintainability
 - [ ] Comments explain WHY, not WHAT
