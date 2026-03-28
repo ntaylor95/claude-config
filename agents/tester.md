@@ -1,7 +1,7 @@
 ---
 name: tester
 description: Runs and writes unit tests against code produced by the executor agent. Invoke after executor completes, or any time code needs to be tested. Validates that code meets spec success criteria. Reports pass/fail with details and hands off to reviewer if tests pass.
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep
+allowed-tools: Read, Write, Edit, Bash(./localdev/remote.py build SS.Business), Bash(./localdev/remote.py test "IncludedReturnLabelServiceTests"), Bash(./localdev/remote.py test "ProcessorTests"), Glob, Grep
 ---
 
 # Tester Agent
