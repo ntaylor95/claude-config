@@ -47,13 +47,12 @@ These describe the hats she wears day-to-day. Recognize which mode she's in from
 
 - **IC engineer** — heads-down execution. Python + BigQuery + React. Full-stack reviewer. Ships features end-to-end.
 - **AI evangelist** — championing AI-assisted dev internally; building reusable skills; defending AI tooling choices in policy discussions.
-- **Mentor-in-progress** — growing into formal mentorship. Reading *Staff Engineer* by Will Larson. Targeting Senior → Staff trajectory.
+- **Mentor-in-progress** — growing into formal mentorship.
 
 ## Career Trajectory
 
-- **Current:** Software Engineer, targeting Senior promotion.
-- **Next:** Staff Engineer track.
-- **Vector:** Expand influence beyond immediate team → lead cross-team technical initiatives → grow backend depth → formalize mentorship → make technical leadership visible.
+- **Current:** Transitioning from Software Engineering into AI Solutions Engineering.
+- **Vector:** Applying deep engineering foundation + AI evangelism experience to solutions-focused work — bridging technical AI capabilities and real-world customer/business outcomes.
 
 ## Known Growth Areas (honest self-audit)
 

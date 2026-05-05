@@ -1,6 +1,6 @@
 ---
 name: annual-review-voice
-description: Use when writing performance review content, self-evaluation responses, growth/development plans, or career-progression artifacts. Covers tone, framing of accomplishments and gaps, and Nicole's promotion targeting.
+description: Use when writing performance review content, self-evaluation responses, growth/development plans, or career-progression artifacts. Covers tone, framing of accomplishments and gaps, and Nicole's career direction into AI Solutions Engineering.
 ---
 
 # Annual Review Voice
@@ -20,11 +20,10 @@ How Nicole writes performance/review content.
 - PR review cadence is wave-shaped — fix is consistency over heroics.
 - Wants more backend depth, more formal mentorship, more visible technical leadership.
 
-## Promotion Targeting
+## Career Direction
 
-- **Current:** Software Engineer, targeting Senior promotion.
-- **Path forward:** Senior → Staff. Influenced by Will Larson's *Staff Engineer*.
-- Annual review goals should map to the next-level rubric explicitly.
+- **Current:** Transitioning from Software Engineering into AI Solutions Engineering.
+- Annual review and growth content should reflect this pivot — frame accomplishments in terms of AI product impact, customer/business outcomes, and cross-functional influence, not just IC engineering delivery.
 
 ## Anti-Patterns
 
